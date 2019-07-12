@@ -1,6 +1,7 @@
 package com.training.get.tests;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -17,13 +18,28 @@ public class getInfoUsingToken {
     }
 
     @Test
-    public void getStandings(){
-        String api = "competitions/BL1/standings";
-        String textrsp = "";
-        Response response = given().header("X-Auth-Token",accessToken).when().log().all().
-                get(api);//.then().statusCode(200).extract().response();
+    public void logStandings(){
+        given().header("X-Auth-Token",accessToken).log().all().when().
+                get("competitions/BL1/standings").then().
+                log().all().assertThat().contentType(ContentType.JSON);
+    }
 
-        textrsp = response.toString();
-        System.out.println(textrsp);
+
+    @Test
+    public void getMatches(){
+        String api="competitions/2003/matches/?matchday=20";
+        given().header("X-Auth-Token",accessToken).log().all().when().
+                get(api).then().
+                log().all().assertThat().contentType(ContentType.JSON);
+    }
+
+    //https://api.football-data.org/v2/competitions
+
+    @Test
+    public void getCompetitions(){
+        String api="competitions";
+        given().header("X-Auth-Token",accessToken).log().all().when().
+                get(api).then().
+                log().all().assertThat().contentType(ContentType.JSON);
     }
 }
